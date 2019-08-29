@@ -18,7 +18,7 @@ class Database {
     _connect() {
         let uri = `mongodb+srv://${username}:${password}@${mongodb_hostname}/${mongodb_databaseName}`;
         console.log(uri);
-        mongoose.connect(uri, { useNewUrlParser: true }).then(() => {
+        mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true }).then(() => {
             console.log('Database connection successful');
         })
             .catch(err => {

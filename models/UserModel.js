@@ -1,6 +1,5 @@
 'use sctrict';
 
-var database = require('../db/database');
 var mongoose = require('mongoose');
 var validator = require('validator');
 var bcrypt = require('mongoose-bcrypt');

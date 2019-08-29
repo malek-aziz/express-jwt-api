@@ -1,4 +1,5 @@
-
+// gọi database trước khi test với models
+let database = require('../../db/database');
 let UserModel = require('../../models/UserModel');
 
 let user = new UserModel({
