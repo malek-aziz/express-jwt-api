@@ -32,6 +32,7 @@ var userSchema = new mongoose.Schema({
 
     password: {
         type: String,
+        bcrypt: true,
         required: true
     },
 
