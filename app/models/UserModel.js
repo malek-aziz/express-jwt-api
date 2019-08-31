@@ -47,7 +47,7 @@ userSchema.plugin(timestamps);
 
 module.exports = mongoose.model('User', userSchema);
 
-module.exports.get = (callback, limit) => {
-    userSchema.find(callback).limit(limit);
-}
+// module.exports.get = (callback, limit) => {
+//     userSchema.find(callback).limit(limit);
+// }
 
