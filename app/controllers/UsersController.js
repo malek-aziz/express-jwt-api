@@ -4,39 +4,63 @@ var User = require('../models/UserModel');
 
 module.exports = {
     index: (req, res) => {
-        // User.get((err, users) => {
-        //     if (err) {
-        //         res.json({
-        //             status: 'error',
-        //             message: err
-        //         });
-        //     }
-        //     res.json({
-        //         status: 'success',
-        //         message: 'Users retrieved successfully',
-        //         data: users
-        //     })
-        // })
-        res.send('get');
+        User.find().select('name username email admin').then(result => {
+            if (result === null || result.length === 0) {
+                res.status(404).json({ mess: 'ERROR 404' });
+            } else {
+                res.status(200).json(result);
+            }
+        }).catch(err => {
+            res.status(500).json({ mess: err.message });
+        })
     },
 
     new: (req, res) => {
-        res.send('create')
-    },
-
-    save: (req, res) => {
-        res.send('update')
+        var user = new User(req.body);
+        user.save().then(result => {
+            res.status(201).send(user);
+        }).catch(err => {
+            res.status(500).json({ mess: err.message });
+        });
     },
 
     view: (req, res) => {
-        res.send('delete')
+        console.log(req.query);
+        User.findOne({
+            email: req.query.userId
+        }).then(mess => {
+            res.json({ mess });
+        }).catch(err => {
+            res.status(500).json({ mess: err.message });
+        })
     },
 
     update: (req, res) => {
-        res.send('delete')
+        const id = req.params.userId;
+        const userBody = req.body;
+        User.findOneAndUpdate({ _id: id }, {
+            $set: userBody
+        }).exec().then(result => {
+            if (result !== null) {
+                res.status(202).json(result);
+            } else {
+                res.status(404).json({ mess: 'User not found' });
+            }
+        }).catch(err => {
+            res.status(500).json({ mess: err.message });
+        })
     },
 
     delete: (req, res) => {
-        res.send('delete')
+        const id = req.params.userId;
+        User.findOneAndDelete({ _id: id }).exec().then(result => {
+            if (result !== null) {
+                res.status(202).json({mess: `Deleted user id:${result._id}`});
+            } else {
+                res.status(404).json({ mess: 'User not found' });
+            }
+        }).catch(err => {
+            res.status(500).json({ mess: err.message });
+        })
     },
 }
