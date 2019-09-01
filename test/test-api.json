@@ -5,6 +5,42 @@
     {
       "type": "Request",
       "method": {
+        "link": "http://tools.ietf.org/html/rfc7231#section-4.3.5",
+        "name": "DELETE"
+      },
+      "body": {
+        "formBody": {
+          "overrideContentType": true,
+          "encoding": "application/x-www-form-urlencoded",
+          "items": []
+        },
+        "bodyType": "Text",
+        "autoSetLength": true
+      },
+      "headersType": "Form",
+      "uri": {
+        "query": {
+          "delimiter": "&",
+          "items": []
+        },
+        "scheme": {
+          "name": "http",
+          "version": "V11"
+        },
+        "host": "localhost:3000",
+        "path": "/users/5d6ab5430dafe2616f28af0e"
+      },
+      "id": "c1a2754c-7fb1-4395-93bd-aaebbae451d1",
+      "lastModified": "2019-09-02T00:45:23.941+07:00",
+      "name": "User-DELETE",
+      "headers": [],
+      "metaInfo": {
+        "ownerId": null
+      }
+    },
+    {
+      "type": "Request",
+      "method": {
         "requestBody": true,
         "link": "http://tools.ietf.org/html/rfc5789",
         "name": "PATCH"
