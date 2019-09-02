@@ -11,7 +11,7 @@ var database = require('./db/database');
 
 var app = express();
 
-// view engine setup -> change to app/views
+// view engine setup -> changed to app/views
 app.set('views', path.join(__dirname, 'app/views'));
 app.set('view engine', 'ejs');
 

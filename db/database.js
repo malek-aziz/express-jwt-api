@@ -1,9 +1,6 @@
 'use sctrict';
 
 var mongoose = require('mongoose');
-var dotenv = require('dotenv');
-
-dotenv.config();
 
 const mongodb_hostname = process.env.MONGODB_HOSTNAME;
 const mongodb_databaseName = process.env.MONGODB_DATABASENAME;
@@ -20,10 +17,10 @@ class Database {
         console.log(uri);
         mongoose.connect(uri, { useNewUrlParser: true, useCreateIndex: true }).then(() => {
             console.log('Database connection successful');
-        })
-            .catch(err => {
-                console.error('Database connection error');
-            })
+        }).catch(err => {
+            console.error('Database connection error');
+        });
+        mongoose.Promise = global.Promise;
     }
 }
 
