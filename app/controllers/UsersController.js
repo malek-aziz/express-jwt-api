@@ -1,10 +1,38 @@
 'use strict'
 
 var User = require('../models/UserModel');
+var jwt = require('jsonwebtoken');
+var config = require('../../config/index');
 
 module.exports = {
     login: (req, res, next) => {
+        User.findOne({
+            email: req.body.email
+        }).exec()
+            .then(user => {
+                //Schema.verify[<feild trong database>] <=== mongoose-brcypt định nghĩa sẵn 
+                user.verifyPassword(req.body.password)
+                    .then(valid => {
+                        if (valid) {
+                            const token = jwt.sign({
+                                email: user.email,
+                                userId: user._id
+                            }, config.jwt.key, {
+                                    expiresIn: '7 days'
+                                });
+                            return res.status(200).json({
+                                token: token,
+                                user: user
+                            })
+                        } else {
+                            return res.status(409).send('not ok');
+                        }
+                    }).catch(e => {
+                        return res.status(409).send('password not correct');
+                    })
+            }).catch(err => {
 
+            });
     },
 
     index: (req, res, next) => {
