@@ -1,11 +1,12 @@
 'use sctrict';
 
 var mongoose = require('mongoose');
+var config = require('../config/index');
 
-const mongodb_hostname = process.env.MONGODB_HOSTNAME;
-const mongodb_databaseName = process.env.MONGODB_DATABASENAME;
-const username = process.env.MONGODB_USERNAME;
-const password = process.env.MONGODB_PASSWORD;
+const mongodb_hostname = config.mongoDb.hostname;
+const mongodb_databaseName = config.mongoDb.databaseName;
+const username = config.mongoDb.username;
+const password = config.mongoDb.password;
 
 class Database {
     constructor() {

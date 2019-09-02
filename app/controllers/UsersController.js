@@ -3,7 +3,11 @@
 var User = require('../models/UserModel');
 
 module.exports = {
-    index: (req, res) => {
+    login: (req, res, next) => {
+
+    },
+
+    index: (req, res, next) => {
         User.find().select('name username email admin').then(result => {
             if (result === null || result.length === 0) {
                 res.status(404).json({ mess: 'ERROR 404' });
@@ -15,7 +19,7 @@ module.exports = {
         })
     },
 
-    new: (req, res) => {
+    new: (req, res, next) => {
         var user = new User(req.body);
         user.save().then(result => {
             res.status(201).send(user);
@@ -24,7 +28,7 @@ module.exports = {
         });
     },
 
-    view: (req, res) => {
+    view: (req, res, next) => {
         console.log(req.query);
         User.findOne({
             email: req.query.userId
@@ -35,7 +39,7 @@ module.exports = {
         })
     },
 
-    update: (req, res) => {
+    update: (req, res, next) => {
         const id = req.params.userId;
         const userBody = req.body;
         User.findOneAndUpdate({ _id: id }, {
@@ -51,11 +55,11 @@ module.exports = {
         })
     },
 
-    delete: (req, res) => {
+    delete: (req, res, next) => {
         const id = req.params.userId;
         User.findOneAndDelete({ _id: id }).exec().then(result => {
             if (result !== null) {
-                res.status(202).json({mess: `Deleted user id:${result._id}`});
+                res.status(202).json({ mess: `Deleted user id:${result._id}` });
             } else {
                 res.status(404).json({ mess: 'User not found' });
             }

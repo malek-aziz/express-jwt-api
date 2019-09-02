@@ -6,6 +6,7 @@ var bodyParser = require('body-parser');
 var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
+var authRouter = require('./routes/auth');
 
 var database = require('./db/database');
 
@@ -38,6 +39,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/api', indexRouter);
+app.use('/auth', authRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
