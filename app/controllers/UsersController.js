@@ -7,13 +7,19 @@ var checkAuth = require('../middleware/check-auth');
 
 module.exports = {
     login: async (req, res, next) => {
+        const { email, username, password } = req.body;
+        console.log(req.body);
         User.findOne({
-            email: req.body.email
+            $or: [{
+                email: email
+            }, {
+                username: username
+            }]
         })
             .exec()
             .then(user => {
                 //Schema.verify[<feild trong database>] <=== mongoose-brcypt định nghĩa sẵn 
-                user.verifyPassword(req.body.password)
+                user.verifyPassword(password)
                     .then(valid => {
                         if (valid) {
                             user.password = 'N/A';
@@ -37,7 +43,9 @@ module.exports = {
                         });
                     })
             }).catch(err => {
-
+                res.status(500).json({
+                    message: err.message
+                });
             });
     },
 
