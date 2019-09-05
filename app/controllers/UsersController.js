@@ -8,7 +8,6 @@ var checkAuth = require('../middleware/check-auth');
 module.exports = {
     login: async (req, res, next) => {
         const { email, username, password } = req.body;
-        console.log(req.body);
         User.findOne({
             $or: [{
                 email: email
