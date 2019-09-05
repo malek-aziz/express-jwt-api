@@ -3,7 +3,6 @@
 var User = require('../models/UserModel');
 var jwt = require('jsonwebtoken');
 var config = require('../../config/index');
-var checkAuth = require('../middleware/check-auth');
 
 module.exports = {
     login: async (req, res, next) => {
