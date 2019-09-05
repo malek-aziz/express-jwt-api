@@ -16,6 +16,7 @@ module.exports = {
                 username: username
             }]
         })
+            .select('-__v')
             .exec()
             .then(user => {
                 //Schema.verify[<feild trong database>] <=== mongoose-brcypt định nghĩa sẵn 
