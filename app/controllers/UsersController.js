@@ -67,12 +67,16 @@ module.exports = {
     view: async (req, res, next) => {
         const { userId } = req.params;
         await User.findById(userId)
-        .select('-password')
-        .then(result => {
-            res.status(200).json({ result });
-        }).catch(err => {
-            res.status(500).json({ mess: err.message });
-        })
+            .select('-password -__v')
+            .then(result => {
+                if (result === null || result.length === 0) {
+                    res.status(404).json({ mess: 'ERROR 404' });
+                } else {
+                    res.status(200).json(result);
+                }
+            }).catch(err => {
+                res.status(500).json({ mess: err.message });
+            })
     },
 
     update: async (req, res, next) => {
@@ -95,7 +99,7 @@ module.exports = {
         const id = req.params.userId;
         await User.findOneAndDelete({ _id: id }).exec().then(result => {
             if (result !== null) {
-                res.status(202).json({ mess: `Deleted user id:${result._id}` });
+                res.status(200).json({ mess: `Deleted user id:${result._id}` });
             } else {
                 res.status(404).json({ mess: 'User not found' });
             }

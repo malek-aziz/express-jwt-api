@@ -35,6 +35,10 @@ var userSchema = new mongoose.Schema({
         required: true
     },
 
+    token: {
+        type: String
+    },
+
     admin: {
         type: Boolean,
         default: false
