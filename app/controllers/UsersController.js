@@ -30,6 +30,7 @@ module.exports = {
                                     expiresIn: '7d'
                                 });
                             user.token = token;
+                            user.password = 'N/A';
                             User.findByIdAndUpdate(user._id, { token: token });
                             return res.status(200).json(user);
                         } else {
