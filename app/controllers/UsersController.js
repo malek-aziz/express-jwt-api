@@ -3,6 +3,7 @@
 var User = require('../models/UserModel');
 var jwt = require('jsonwebtoken');
 var config = require('../../config/index');
+var checkAuth = require('../middleware/check-auth');
 
 module.exports = {
     login: async (req, res, next) => {
@@ -22,15 +23,18 @@ module.exports = {
                             }, config.jwt.key, {
                                     expiresIn: '7d'
                                 });
-                            return res.status(200).json({
-                                token: token,
-                                user: user
-                            })
+                            user.token = token;
+                            User.findByIdAndUpdate(user._id, { token: token });
+                            return res.status(200).json(user);
                         } else {
-                            return res.status(409).send('not ok');
+                            return res.status(401).json({
+                                message: 'password is incorrect'
+                            });
                         }
                     }).catch(e => {
-                        return res.status(409).send('password not correct');
+                        return res.status(500).json({
+                            message: e.message
+                        });
                     })
             }).catch(err => {
 
@@ -44,7 +48,7 @@ module.exports = {
     },
 
     index: async (req, res, next) => {
-        await User.find().select('-password -__v').then(result => {
+        await User.find().select('-password -__v -token').then(result => {
             if (result === null || result.length === 0) {
                 res.status(404).json({ mess: 'ERROR 404' });
             } else {
@@ -84,7 +88,7 @@ module.exports = {
         const userBody = req.body;
         await User.findOneAndUpdate({ _id: id }, {
             $set: userBody
-        }).exec().then(result => {
+        }, { new: true }).then(result => {
             if (result !== null) {
                 res.status(202).json(result);
             } else {

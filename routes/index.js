@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 
 var userController = require('../app/controllers/UsersController');
+var checkAuth = require('../app/middleware/check-auth');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -9,13 +10,13 @@ router.get('/', function (req, res, next) {
 });
 
 router.route('/users')
-  .get(userController.index)
+  .get(checkAuth, userController.index)
   .post(userController.new);
 
 router.route('/users/:userId')
   .get(userController.view)
-  .patch(userController.update)
-  .put(userController.update)
-  .delete(userController.delete);
+  .patch(checkAuth, userController.update)
+  .put(checkAuth, userController.update)
+  .delete(checkAuth, userController.delete);
 
 module.exports = router;
