@@ -55,6 +55,10 @@ module.exports = {
         })
     },
 
+    ggAuth: async(req, res, next) => {
+        res.status(200).send('OK');
+    },
+
     index: async (req, res, next) => {
         await User.find().select('-password -__v -token').then(result => {
             if (result === null || result.length === 0) {
