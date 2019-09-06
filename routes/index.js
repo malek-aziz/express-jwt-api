@@ -3,6 +3,8 @@ var router = express.Router();
 
 var userController = require('../app/controllers/UsersController');
 var checkAuth = require('../app/middleware/check-auth');
+var passport = require('passport');
+var passportConf = require('../app/middleware/passport');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -10,13 +12,13 @@ router.get('/', function (req, res, next) {
 });
 
 router.route('/users')
-  .get(checkAuth, userController.index)
+  .get(passport.authenticate('jwt', {session: false}), userController.index)
   .post(userController.new);
 
 router.route('/users/:userId')
   .get(userController.view)
-  .patch(checkAuth, userController.update)
-  .put(checkAuth, userController.update)
-  .delete(checkAuth, userController.delete);
+  .patch(passport.authenticate('jwt', {session: false}), userController.update)
+  .put(passport.authenticate('jwt', {session: false}), userController.update)
+  .delete(passport.authenticate('jwt', {session: false}), userController.delete);
 
 module.exports = router;
