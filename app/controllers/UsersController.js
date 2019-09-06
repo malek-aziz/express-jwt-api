@@ -6,47 +6,17 @@ var config = require('../../config/index');
 
 module.exports = {
     login: async (req, res, next) => {
-        const { email, username, password } = req.body;
-        User.findOne({
-            $or: [{
-                email: email
-            }, {
-                username: username
-            }]
-        })
-            .select('-__v')
-            .exec()
-            .then(user => {
-                //Schema.verify[<feild trong database>] <=== mongoose-brcypt định nghĩa sẵn 
-                user.verifyPassword(password)
-                    .then(valid => {
-                        if (valid) {
-                            user.password = 'N/A';
-                            const token = jwt.sign({
-                                email: user.email,
-                                userId: user._id
-                            }, config.jwt.key, {
-                                    expiresIn: '7d'
-                                });
-                            user.token = token;
-                            user.password = 'N/A';
-                            User.findByIdAndUpdate(user._id, { token: token });
-                            return res.status(200).json(user);
-                        } else {
-                            return res.status(401).json({
-                                message: 'password is incorrect'
-                            });
-                        }
-                    }).catch(e => {
-                        return res.status(500).json({
-                            message: e.message
-                        });
-                    })
-            }).catch(err => {
-                res.status(500).json({
-                    message: err.message
-                });
+        const {user} = req;
+        const token = jwt.sign({
+            email: user.email,
+            userId: user._id
+        }, config.jwt.key, {
+                expiresIn: '7d'
             });
+        user.token = token;
+        user.password = 'N/A';
+        User.findByIdAndUpdate(user._id, { token: token });
+        return res.status(200).json(user);
     },
 
     loginRequired: async (req, res, next) => {
@@ -55,7 +25,7 @@ module.exports = {
         })
     },
 
-    ggAuth: async(req, res, next) => {
+    ggAuth: async (req, res, next) => {
         console.log(req);
         res.status(200).send('OK');
     },
