@@ -12,12 +12,11 @@ passport.use(new JwtStrategy({
     secretOrKey: config.jwt.key
 }, async (payload, done) => {
     try {
-        console.log(payload.userId);
         // Tìm user torng database
         const user = await User.findById(payload.userId);
-        
+
         // Nếu user ko tồn tại, handle it
-        if(!user){
+        if (!user) {
             return done(null, false);
         }
         // nếu ko, return user
@@ -31,17 +30,17 @@ passport.use(new JwtStrategy({
 passport.use(new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password'
-}, async(email, password, done)=>{
-    const user = await User.findOne({email});
+}, async (email, password, done) => {
+    const user = await User.findOne({ email });
 
-    if(!user){
+    if (!user) {
         return done(null, false);
     }
 
-    await user.verifyPassword(password).then(valid =>{
-        if(!valid){
+    await user.verifyPassword(password).then(valid => {
+        if (!valid) {
             return done(null, false);
-        }else{
+        } else {
             done(null, user);
         }
     })

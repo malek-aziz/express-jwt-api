@@ -6,9 +6,8 @@ var config = require('../../config/index');
 
 module.exports = {
     login: async (req, res, next) => {
-        const {user} = req;
+        const { user } = req;
         const token = jwt.sign({
-            email: user.email,
             userId: user._id
         }, config.jwt.key, {
                 expiresIn: '7d'
