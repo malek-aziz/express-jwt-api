@@ -7,6 +7,7 @@ var passport = require('passport');
 var passportConf = require('../app/middleware/passport');
 
 var middlewareJWT = passport.authenticate('jwt', { session: false });
+
 /* GET home page. */
 router.get('/', function (req, res, next) {
   res.render('index', { title: 'Express' });

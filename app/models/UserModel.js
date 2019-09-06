@@ -11,13 +11,6 @@ var userSchema = new mongoose.Schema({
         trim: true
     },
 
-    username: {
-        type: String,
-        unique: true,
-        trim: true,
-        lowercase: true
-    },
-
     email: {
         type: String,
         required: true,
@@ -49,8 +42,3 @@ userSchema.plugin(bcrypt);
 userSchema.plugin(timestamps);
 
 module.exports = mongoose.model('User', userSchema);
-
-// module.exports.get = (callback, limit) => {
-//     userSchema.find(callback).limit(limit);
-// }
-
