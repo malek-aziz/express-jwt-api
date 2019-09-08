@@ -5,10 +5,11 @@ var passport = require('passport');
 var passportConf = require('../app/middleware/passport');
 
 var middlewareLogin = passport.authenticate('local', { session: false });
+var middlewareAuthGoogle = passport.authenticate('googleToken', {session: false });
 
 var userController = require('../app/controllers/UsersController');
 
 router.post('/login', middlewareLogin, userController.login);
-router.get('/google-auth-callback', userController.ggAuth);
+router.post('/google-auth-callback', middlewareAuthGoogle, userController.ggAuth);
 
 module.exports = router;

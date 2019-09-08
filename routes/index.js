@@ -10,6 +10,7 @@ var middlewareJWT = passport.authenticate('jwt', { session: false });
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
+  console.log(req.headers);
   res.render('index', { title: 'Express' });
 });
 

@@ -4,14 +4,19 @@ var User = require('../models/UserModel');
 var jwt = require('jsonwebtoken');
 var config = require('../../config/index');
 
+function getToken(_id) {
+    let token = jwt.sign({
+        userId: _id
+    }, config.jwt.key, {
+        expiresIn: '7d'
+    });
+    return token;
+}
+
 module.exports = {
     login: async (req, res, next) => {
         const { user } = req;
-        const token = jwt.sign({
-            userId: user._id
-        }, config.jwt.key, {
-                expiresIn: '7d'
-            });
+        const token = getToken(user._id);
         user.token = token;
         user.password = 'N/A';
         User.findByIdAndUpdate(user._id, { token: token });
@@ -25,8 +30,12 @@ module.exports = {
     },
 
     ggAuth: async (req, res, next) => {
-        console.log(req);
-        res.status(200).send('OK');
+        const { user } = req;
+        const token = getToken(user._id);
+        user.token = token;
+        user.password = 'N/A';
+        User.findByIdAndUpdate(user._id, { token: token });
+        return res.status(200).json(user);
     },
 
     index: async (req, res, next) => {

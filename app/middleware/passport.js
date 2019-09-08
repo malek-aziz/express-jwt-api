@@ -1,6 +1,7 @@
 const passport = require('passport');
 const JwtStrategy = require('passport-jwt').Strategy;
 const LocalStrategy = require('passport-local').Strategy;
+const GoogleStrategy = require('passport-google-plus-token');
 const { ExtractJwt } = require('passport-jwt');
 const config = require('../../config/index');
 const User = require('../models/UserModel');
@@ -45,4 +46,30 @@ passport.use(new LocalStrategy({
         }
     })
 
+}));
+
+// Login using google auth
+
+passport.use('googleToken', new GoogleStrategy({
+    clientID: config.ggAuth.clientID,
+    clientSecret: config.ggAuth.clientSecret
+}, async (accessToken, refreshToken, profile, done) => {
+    // console.log('accessToken', accessToken);
+    // console.log('refreshToken', refreshToken);
+    // console.log('profile', profile);
+
+    const user = await User.findOne({
+        email: profile.emails[0].value
+    });
+    
+    if(!user){
+        var newUser = new User({
+            email: profile.emails[0].value,
+            name: profile.name.familyName + ' ' + profile.name.givenName,
+            password: '12345678'
+        });
+        const userAdded = await newUser.save();
+        return done(null, userAdded);
+    }
+    return done(null, user);
 }));
