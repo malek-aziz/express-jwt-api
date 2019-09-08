@@ -38,6 +38,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.disable('x-powered-by');
+
 app.use('/api', indexRouter);
 app.use('/auth', authRouter);
 
