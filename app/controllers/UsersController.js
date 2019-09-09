@@ -19,7 +19,7 @@ module.exports = {
         const token = getToken(user._id);
         user.token = token;
         user.password = 'N/A';
-        User.findByIdAndUpdate(user._id, { token: token });
+        await User.findByIdAndUpdate(user._id, { token: token });
         return res.status(200).json(user);
     },
 
@@ -34,7 +34,7 @@ module.exports = {
         const token = getToken(user._id);
         user.token = token;
         user.password = 'N/A';
-        User.findByIdAndUpdate(user._id, { token: token });
+        await User.findByIdAndUpdate(user._id, { token: token });
         return res.status(200).json(user);
     },
 
