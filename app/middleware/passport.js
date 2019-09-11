@@ -9,7 +9,7 @@ const User = require('../models/UserModel');
 
 
 // Request using JWT
-passport.use(new JwtStrategy({
+passport.use(new JwtStrategy({ 
     jwtFromRequest: ExtractJwt.fromHeader('authorization'),
     secretOrKey: config.jwt.key
 }, async (payload, done) => {
