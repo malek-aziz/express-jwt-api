@@ -38,6 +38,11 @@ module.exports = {
         return res.status(200).json(user);
     },
 
+    fbAuth: async (req, res, next) => {
+        console.log(req);
+        res.status(200).send('OK');
+    },
+
     index: async (req, res, next) => {
         await User.find().select('-password -__v -token').then(result => {
             if (result === null || result.length === 0) {

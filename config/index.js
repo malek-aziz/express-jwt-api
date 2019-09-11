@@ -14,5 +14,10 @@ module.exports = {
     ggAuth: {
         clientID: process.env.GG_CLIENT_ID,
         clientSecret: process.env.GG_CLIENT_SECRET
-    }   
+    },
+    fbAuth: {
+        appID: process.env.FB_APP_ID,
+        appSecret: process.env.FB_APP_SECRET,
+        displayName: process.env.FB_DISPLAY_NAME
+    }
 };
