@@ -25,8 +25,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //CORS tham khảo tại https://topdev.vn/blog/cors-la-gi/
 app.use((req, res, next) => {
-  // res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Origin", "*");
+  // res.header("Access-Control-Allow-Origin", "http://localhost:3000");
   res.header(
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept, Authorization"
