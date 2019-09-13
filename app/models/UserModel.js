@@ -1,4 +1,4 @@
-'use sctrict';
+'use strict'
 
 var mongoose = require('mongoose');
 var validator = require('validator');
