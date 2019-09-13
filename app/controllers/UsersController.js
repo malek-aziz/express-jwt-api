@@ -3,10 +3,13 @@
 var User = require('../models/UserModel');
 var jwt = require('jsonwebtoken');
 var config = require('../../config/index');
+var accesscontrol = require('../helpers/accesscontrol');
 
-function getToken(_id) {
+function getToken(user) {
+    var {_id, role} = user;
     let token = jwt.sign({
-        userId: _id
+        userId: _id,
+        role: role
     }, config.jwt.key, {
         expiresIn: '7d'
     });
@@ -16,7 +19,7 @@ function getToken(_id) {
 module.exports = {
     login: async (req, res, next) => {
         const { user } = req;
-        const token = getToken(user._id);
+        const token = getToken(user);
         user.token = token;
         user.password = 'N/A';
         await User.findByIdAndUpdate(user._id, { token: token });
@@ -31,7 +34,7 @@ module.exports = {
 
     ggAuth: async (req, res, next) => {
         const { user } = req;
-        const token = getToken(user._id);
+        const token = getToken(user);
         user.token = token;
         user.password = 'N/A';
         await User.findByIdAndUpdate(user._id, { token: token });
@@ -44,6 +47,7 @@ module.exports = {
     },
 
     index: async (req, res, next) => {
+        console.log(req.user);
         await User.find().select('-password -__v -token').then(result => {
             if (result === null || result.length === 0) {
                 res.status(404).json({ mess: 'ERROR 404' });
