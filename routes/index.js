@@ -5,8 +5,10 @@ var userController = require('../app/controllers/UsersController');
 
 var passport = require('passport');
 var passportConf = require('../app/middleware/passport');
+var checkRole = require('../app/middleware/checkRole');
 
 var middlewareJWT = passport.authenticate('jwt', { session: false });
+var middlewareChekRole = checkRole('user');
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
@@ -14,7 +16,7 @@ router.get('/', function (req, res, next) {
 });
 
 router.route('/users')
-  .get(middlewareJWT, userController.index)
+  .get(middlewareJWT, middlewareChekRole, userController.index)
   .post(userController.new);
 
 router.route('/users/:userId')

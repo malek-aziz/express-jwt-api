@@ -11,6 +11,7 @@ async function accessControl() {
     }));
     const ac = new AccessControl();
     ac.setGrants(filteredObj);
+    global.ac = ac;
     return ac;
 }
 

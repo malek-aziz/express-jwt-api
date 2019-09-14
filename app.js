@@ -10,6 +10,8 @@ var authRouter = require('./routes/auth');
 
 var database = require('./db/database');
 
+var accesscontrol = require('./app/helpers/accesscontrol');
+
 var app = express();
 
 // view engine setup -> changed to app/views
@@ -39,6 +41,8 @@ app.use((req, res, next) => {
 });
 
 app.disable('x-powered-by');
+
+accesscontrol();
 
 app.use('/api', indexRouter);
 app.use('/auth', authRouter);

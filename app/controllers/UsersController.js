@@ -1,12 +1,15 @@
 'use strict'
 
-var User = require('../models/UserModel');
 var jwt = require('jsonwebtoken');
+var chalk = require('chalk');
+
+var User = require('../models/UserModel');
 var config = require('../../config/index');
-var accesscontrol = require('../helpers/accesscontrol');
+
+var logger = console.log;
 
 function getToken(user) {
-    var {_id, role} = user;
+    var { _id, role } = user;
     let token = jwt.sign({
         userId: _id,
         role: role
@@ -22,7 +25,7 @@ module.exports = {
         const token = getToken(user);
         user.token = token;
         user.password = 'N/A';
-        await User.findByIdAndUpdate(user._id, { token: token });
+        User.findByIdAndUpdate(user._id, { token: token });
         return res.status(200).json(user);
     },
 
@@ -47,7 +50,12 @@ module.exports = {
     },
 
     index: async (req, res, next) => {
-        console.log(req.user);
+        let { role } = req.user;
+        const ac = global.ac;
+        const permission = ac.can(role).readAny('user');
+
+        logger('' + chalk.green(permission.granted));
+
         await User.find().select('-password -__v -token').then(result => {
             if (result === null || result.length === 0) {
                 res.status(404).json({ mess: 'ERROR 404' });
