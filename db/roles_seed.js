@@ -9,7 +9,7 @@ var logger = console.log;
 
 var grantsList = [
     { role: 'admin', resource: 'user', action: 'create:any', attributes: '*' },
-    { role: 'admin', resource: 'user', action: 'read:any', attributes: '*' },
+    { role: 'admin', resource: 'user', action: 'read:any', attributes: '*, !password, !__v' },
     { role: 'admin', resource: 'user', action: 'update:any', attributes: '*' },
     { role: 'admin', resource: 'user', action: 'delete:any', attributes: '*' },
 
