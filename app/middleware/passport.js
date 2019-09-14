@@ -68,8 +68,8 @@ passport.use('googleToken', new GoogleStrategy({
             name: profile.name.familyName + ' ' + profile.name.givenName,
             password: '12345678'
         });
-        const userAdded = await newUser.save();
-        return done(null, userAdded);
+        newUser.save();
+        return done(null, newUser);
     }
     return done(null, user);
 }));
