@@ -19,5 +19,9 @@ module.exports = {
         appID: process.env.FB_APP_ID,
         appSecret: process.env.FB_APP_SECRET,
         displayName: process.env.FB_DISPLAY_NAME
+    },
+    email:{
+        gmailUsername: process.env.GMAIL_USERNAME,
+        gmailPassword: process.env.GMAIL_PASSWORD
     }
 };

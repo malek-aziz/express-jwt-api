@@ -6,7 +6,8 @@ const FacebookStrategy = require('passport-facebook-token');
 const { ExtractJwt } = require('passport-jwt');
 const config = require('../../config/index');
 const User = require('../models/UserModel');
-
+const mailer = require('../commons/email/index');
+const cryptoRandomString = require('crypto-random-string');
 
 // Request using JWT
 passport.use(new JwtStrategy({ 
@@ -63,11 +64,26 @@ passport.use('googleToken', new GoogleStrategy({
     });
 
     if (!user) {
+        let cryptoString = cryptoRandomString({length: 6, type: 'base64'});
         var newUser = new User({
             email: profile.emails[0].value,
             name: profile.name.familyName + ' ' + profile.name.givenName,
-            password: '12345678'
+            password: cryptoString
         });
+        mailObject = {
+            to: newUser.email,
+            subject: 'Welcome to DoraSound',
+            text: '',
+            content:{
+                title: 'Welcome to DoraSound',
+                body1: 'Xin chào mừng bạn đến với DoraSound',
+                body2: 'Đây là mật khẩu đăng nhập DoraSound: <b>' + newUser.password + '</b>',
+                body3: 'Chúc bạn nghe nhạc vui vẻ',
+                body4: 'Xin cảm ơn - Đội ngũ DoraSound.',
+                link: ''
+            }
+        }
+        mailer(mailObject);
         newUser.save();
         return done(null, newUser);
     }
