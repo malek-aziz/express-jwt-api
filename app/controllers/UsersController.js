@@ -5,8 +5,6 @@ var jwt = require('jsonwebtoken');
 var User = require('../models/UserModel');
 var config = require('../../config/index');
 
-var filterHelper = require('../helpers/filter');
-
 function getToken(user) {
     var { _id, role } = user;
     let token = jwt.sign({
