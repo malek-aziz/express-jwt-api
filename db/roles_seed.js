@@ -13,7 +13,7 @@ var grantsList = [
     { role: 'admin', resource: 'user', action: 'update:any', attributes: '*' },
     { role: 'admin', resource: 'user', action: 'delete:any', attributes: '*' },
 
-    { role: 'user', resource: 'user', action: 'read:any', attributes: '*, !password, !__v' },
+    { role: 'user', resource: 'user', action: 'read:any', attributes: '*, !password, !__v, !token' },
     { role: 'user', resource: 'user', action: 'update:own', attributes: '*, !token' },
     { role: 'user', resource: 'user', action: 'delete:own', attributes: '*' },
 

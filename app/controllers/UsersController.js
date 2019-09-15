@@ -6,6 +6,8 @@ var chalk = require('chalk');
 var User = require('../models/UserModel');
 var config = require('../../config/index');
 
+var filterHelper = require('../helpers/filter');
+
 var logger = console.log;
 
 function getToken(user) {
@@ -50,17 +52,17 @@ module.exports = {
     },
 
     index: async (req, res, next) => {
-        let { role } = req.user;
-        const ac = global.ac;
-        const permission = ac.can(role).readAny('user');
+        var { role } = req.user;
+        let ac = global.ac;
+        var permission = ac.can(role).readAny('user');
 
-        logger('' + chalk.green(permission.granted));
-
-        await User.find().select('-password -__v -token').then(result => {
-            if (result === null || result.length === 0) {
+        await User.find().exec().then(results => {
+            if (results === null || results.length === 0) {
                 res.status(404).json({ mess: 'ERROR 404' });
             } else {
-                res.status(200).json(result);
+                const data = JSON.parse(JSON.stringify(results));
+                var filtered = permission.filter(data);
+                res.status(200).json(filtered);
             }
         }).catch(err => {
             res.status(500).json({ mess: err.message });
