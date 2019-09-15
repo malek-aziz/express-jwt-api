@@ -1,14 +1,11 @@
 'use strict'
 
 var jwt = require('jsonwebtoken');
-var chalk = require('chalk');
 
 var User = require('../models/UserModel');
 var config = require('../../config/index');
 
 var filterHelper = require('../helpers/filter');
-
-var logger = console.log;
 
 function getToken(user) {
     var { _id, role } = user;
