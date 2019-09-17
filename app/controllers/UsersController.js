@@ -6,7 +6,7 @@ var User = require('../models/UserModel');
 var config = require('../../config/index');
 
 function getToken(user) {
-    var { _id, role } = user;
+    let { _id, role } = user;
     let token = jwt.sign({
         userId: _id,
         role: role
@@ -18,8 +18,8 @@ function getToken(user) {
 
 module.exports = {
     login: async (req, res, next) => {
-        const { user } = req;
-        const token = getToken(user);
+        let { user } = req;
+        let token = getToken(user);
         user.token = token;
         user.password = 'N/A';
         User.findByIdAndUpdate(user._id, { token: token });
@@ -33,8 +33,8 @@ module.exports = {
     },
 
     ggAuth: async (req, res, next) => {
-        const { user } = req;
-        const token = getToken(user);
+        let { user } = req;
+        let token = getToken(user);
         user.token = token;
         user.password = 'N/A';
         await User.findByIdAndUpdate(user._id, { token: token });
@@ -46,12 +46,12 @@ module.exports = {
         res.status(200).send('OK');
     },
 
-    index: async (req, res, next) => {
-        var { role } = req.user;
+    index: (req, res, next) => {
+        let { role } = req.user;
         let ac = global.ac;
-        var permission = ac.can(role).readAny('user');
+        let permission = ac.can(role).readAny('user');
 
-        await User.find().exec().then(results => {
+        User.find().exec().then(results => {
             if (results === null || results.length === 0) {
                 res.status(404).json({ mess: 'ERROR 404' });
             } else {
@@ -64,18 +64,18 @@ module.exports = {
         })
     },
 
-    new: async (req, res, next) => {
-        var user = new User(req.body);
-        await user.save().then(result => {
+    new: (req, res, next) => {
+        let user = new User(req.body);
+        user.save().then(result => {
             res.status(201).send(user);
         }).catch(err => {
             res.status(500).json({ mess: err.message });
         });
     },
 
-    view: async (req, res, next) => {
-        const { userId } = req.params;
-        await User.findById(userId)
+    view: (req, res, next) => {
+        let { userId } = req.params;
+        User.findById(userId)
             .select('-password -__v')
             .then(result => {
                 if (result === null || result.length === 0) {
@@ -88,10 +88,10 @@ module.exports = {
             })
     },
 
-    update: async (req, res, next) => {
-        const id = req.params.userId;
-        const userBody = req.body;
-        await User.findOneAndUpdate({ _id: id }, {
+    update: (req, res, next) => {
+        let id = req.params.userId;
+        let userBody = req.body;
+        User.findOneAndUpdate({ _id: id }, {
             $set: userBody
         }, { new: true }).then(result => {
             if (result !== null) {
@@ -104,9 +104,9 @@ module.exports = {
         })
     },
 
-    delete: async (req, res, next) => {
-        const id = req.params.userId;
-        await User.findOneAndDelete({ _id: id }).exec().then(result => {
+    delete: (req, res, next) => {
+        let id = req.params.userId;
+        User.findOneAndDelete({ _id: id }).exec().then(result => {
             if (result !== null) {
                 res.status(200).json({ mess: `Deleted user id:${result._id}` });
             } else {
