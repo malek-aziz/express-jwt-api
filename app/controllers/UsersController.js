@@ -17,7 +17,7 @@ function getToken(user) {
 }
 
 module.exports = {
-    login: async (req, res, next) => {
+    login: (req, res, next) => {
         let { user } = req;
         let token = getToken(user);
         user.token = token;
@@ -26,22 +26,22 @@ module.exports = {
         return res.status(200).json(user);
     },
 
-    loginRequired: async (req, res, next) => {
+    loginRequired: (req, res, next) => {
         res.status(200).json({
             mess: 'yêu cầu bạn phải login lại'
         })
     },
 
-    ggAuth: async (req, res, next) => {
+    ggAuth: (req, res, next) => {
         let { user } = req;
         let token = getToken(user);
         user.token = token;
         user.password = 'N/A';
-        await User.findByIdAndUpdate(user._id, { token: token });
+        User.findByIdAndUpdate(user._id, { token: token });
         return res.status(200).json(user);
     },
 
-    fbAuth: async (req, res, next) => {
+    fbAuth: (req, res, next) => {
         console.log(req);
         res.status(200).send('OK');
     },
@@ -55,8 +55,8 @@ module.exports = {
             if (results === null || results.length === 0) {
                 res.status(404).json({ mess: 'ERROR 404' });
             } else {
-                const data = JSON.parse(JSON.stringify(results));
-                var filtered = permission.filter(data);
+                let data = JSON.parse(JSON.stringify(results));
+                let filtered = permission.filter(data);
                 res.status(200).json(filtered);
             }
         }).catch(err => {

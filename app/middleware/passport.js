@@ -16,7 +16,7 @@ passport.use(new JwtStrategy({
 }, async (payload, done) => {
     try {
         // Tìm user torng database
-        const user = await User.findById(payload.userId);
+        let user = await User.findById(payload.userId);
 
         // Nếu user ko tồn tại, handle it
         if (!user) {
@@ -34,7 +34,7 @@ passport.use(new LocalStrategy({
     usernameField: 'email',
     passwordField: 'password'
 }, async (email, password, done) => {
-    const user = await User.findOne({ email }).select('-__v');
+    let user = await User.findOne({ email }).select('-__v');
 
     if (!user) {
         return done(null, false);
@@ -58,14 +58,13 @@ passport.use('googleToken', new GoogleStrategy({
     // console.log('accessToken', accessToken);
     // console.log('refreshToken', refreshToken);
     // console.log('profile', profile);
-
-    const user = await User.findOne({
+    let user = await User.findOne({
         email: profile.emails[0].value
     });
 
     if (!user) {
         let cryptoString = cryptoRandomString({length: 6, type: 'base64'});
-        var newUser = new User({
+        let newUser = new User({
             email: profile.emails[0].value,
             name: profile.name.familyName + ' ' + profile.name.givenName,
             password: cryptoString
