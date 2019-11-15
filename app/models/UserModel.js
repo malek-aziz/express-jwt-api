@@ -1,9 +1,10 @@
 'use strict'
 
 var mongoose = require('mongoose');
-var validator = require('validator');
 var bcrypt = require('mongoose-bcrypt');
 var timestamps = require('mongoose-timestamp');
+var validator = require('validator');
+var Schema = mongoose.Schema;
 
 var userSchema = new mongoose.Schema({
     name: {
@@ -22,10 +23,22 @@ var userSchema = new mongoose.Schema({
         }
     },
 
+    avatar: {
+        type: String
+    },
+
+    cover: {
+        type: String
+    },
+
     password: {
         type: String,
         bcrypt: true,
         required: true
+    },
+
+    age: {
+        type: Number
     },
 
     token: {

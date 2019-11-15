@@ -1,32 +1,28 @@
-const passport = require('passport');
-const JwtStrategy = require('passport-jwt').Strategy;
-const LocalStrategy = require('passport-local').Strategy;
-const GoogleStrategy = require('passport-google-plus-token');
-const FacebookStrategy = require('passport-facebook-token');
-const { ExtractJwt } = require('passport-jwt');
-const config = require('../../config/index');
-const User = require('../models/UserModel');
-const mailer = require('../commons/email/index');
 const cryptoRandomString = require('crypto-random-string');
+const passport = require('passport');
+const FacebookStrategy = require('passport-facebook-token');
+const GoogleStrategy = require('passport-google-plus-token');
+const JwtStrategy = require('passport-jwt').Strategy;
+const { ExtractJwt } = require('passport-jwt');
+const LocalStrategy = require('passport-local').Strategy;
+const mailer = require('../commons/email/index');
+const User = require('../models/UserModel');
+const config = require('../../config/index');
 
 // Request using JWT
-passport.use(new JwtStrategy({ 
-    jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+passport.use(new JwtStrategy({
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: config.jwt.key
 }, async (payload, done) => {
-    try {
-        // Tìm user torng database
-        let user = await User.findById(payload.userId);
+    // Tìm user trong database
+    let user = await User.findById(payload.userId);
 
-        // Nếu user ko tồn tại, handle it
-        if (!user) {
-            return done(null, false);
-        }
-        // nếu ko, return user
-        done(null, user);
-    } catch (err) {
-        done(err, false);
+    // Nếu user ko tồn tại, handle it
+    if (!user) {
+        return done(null, false);
     }
+    // nếu ko, return user
+    done(null, user);
 }));
 
 // Login using username && password
@@ -63,7 +59,7 @@ passport.use('googleToken', new GoogleStrategy({
     });
 
     if (!user) {
-        let cryptoString = cryptoRandomString({length: 6, type: 'base64'});
+        let cryptoString = cryptoRandomString({ length: 6, type: 'base64' });
         let newUser = new User({
             email: profile.emails[0].value,
             name: profile.name.familyName + ' ' + profile.name.givenName,
@@ -71,14 +67,14 @@ passport.use('googleToken', new GoogleStrategy({
         });
         mailObject = {
             to: newUser.email,
-            subject: 'Welcome to DoraSound',
+            subject: 'Welcome to DoraCoder',
             text: '',
-            content:{
-                title: 'Welcome to DoraSound',
-                body1: 'Xin chào mừng bạn đến với DoraSound',
-                body2: 'Đây là mật khẩu đăng nhập DoraSound: <b>' + newUser.password + '</b>',
+            content: {
+                title: 'Welcome to DoraCoder',
+                body1: 'Xin chào mừng bạn đến với DoraCoder',
+                body2: 'Đây là mật khẩu đăng nhập DoraCoder: <b>' + newUser.password + '</b>',
                 body3: 'Chúc bạn nghe nhạc vui vẻ',
-                body4: 'Xin cảm ơn - Đội ngũ DoraSound.',
+                body4: 'Xin cảm ơn - Đội ngũ DoraCoder.',
                 link: ''
             }
         }

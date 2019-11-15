@@ -1,9 +1,12 @@
 'use strict'
 
-var jwt = require('jsonwebtoken');
+const jwt = require('jsonwebtoken');
 
-var User = require('../models/UserModel');
-var config = require('../../config/index');
+const User = require('../models/UserModel');
+const config = require('../../config/index');
+
+const { grantPermission } = require('../commons/grantPermisson');
+const { customFilter } = require('../commons/objectEditor');
 
 function getToken(user) {
     let { _id, role } = user;
@@ -46,26 +49,21 @@ module.exports = {
         res.status(200).send('OK');
     },
 
-    index: (req, res, next) => {
-        let { role } = req.user;
-        let ac = global.ac;
-        let permission = ac.can(role).readAny('user');
+    index: async (req, res, next) => {
+        let { permission } = await grantPermission('read:user', req.user, null);
+        if (!permission.granted) next();
 
-        User.find().exec().then(results => {
-            if (results === null || results.length === 0) {
-                res.status(404).json({ mess: 'ERROR 404' });
-            } else {
-                let data = JSON.parse(JSON.stringify(results));
-                let filtered = permission.filter(data);
-                res.status(200).json(filtered);
-            }
-        }).catch(err => {
-            res.status(500).json({ mess: err.message });
-        })
+        let user = await User.find().lean().catch(err => { res.status(500).json({ message: err.errmsg }) });
+        if (user) {
+            let { resData } = customFilter(permission, user);
+            res.status(200).json(resData);
+        } else next();
     },
 
     new: (req, res, next) => {
-        let user = new User(req.body);
+        let { permission } = grantPermission('create:user', req.user, null);
+        let { resData } = customFilter(permission, req.body);
+        let user = new User(resData);
         user.save().then(result => {
             res.status(201).send(user);
         }).catch(err => {
@@ -73,47 +71,48 @@ module.exports = {
         });
     },
 
-    view: (req, res, next) => {
-        let { userId } = req.params;
-        User.findById(userId)
-            .select('-password -__v')
-            .then(result => {
-                if (result === null || result.length === 0) {
-                    res.status(404).json({ mess: 'ERROR 404' });
-                } else {
-                    res.status(200).json(result);
-                }
-            }).catch(err => {
-                res.status(500).json({ mess: err.message });
-            })
+    view: async (req, res, next) => {
+        let { resourceId } = req.params;
+        let user = await User.findById(resourceId)
+            .select('-password -__v').catch(err => { res.status(500).json({ message: err.errmsg }) });
+
+        if (user) {
+            let { permission } = grantPermission('read:user', req.user, user._id);
+            if (!permission.granted) next();
+            let { resData } = customFilter(permission, user);
+            res.status(200).json(resData);
+        } else next();
     },
 
-    update: (req, res, next) => {
-        let id = req.params.userId;
-        let userBody = req.body;
-        User.findOneAndUpdate({ _id: id }, {
-            $set: userBody
-        }, { new: true }).then(result => {
-            if (result !== null) {
-                res.status(202).json(result);
-            } else {
-                res.status(404).json({ mess: 'User not found' });
-            }
-        }).catch(err => {
-            res.status(500).json({ mess: err.message });
-        })
+    update: async (req, res, next) => {
+        let { resourceId } = req.params;
+
+        let { permission } = grantPermission('update:user', req.user, resourceId);
+        if (!permission.granted) next();
+        else {
+            let userBody = req.body;
+            let { resData } = customFilter(permission, userBody);
+
+            let user = await User.findOneAndUpdate(
+                { _id: resourceId },
+                { $set: resData },
+                { new: true }).catch(err => { res.status(500).json({ message: err.errmsg }) });
+            if (user) {
+                res.status(201).json(user);
+            } else next();
+        }
     },
 
-    delete: (req, res, next) => {
-        let id = req.params.userId;
-        User.findOneAndDelete({ _id: id }).exec().then(result => {
-            if (result !== null) {
-                res.status(200).json({ mess: `Deleted user id:${result._id}` });
-            } else {
-                res.status(404).json({ mess: 'User not found' });
-            }
-        }).catch(err => {
-            res.status(500).json({ mess: err.message });
-        })
+    delete: async (req, res, next) => {
+        let { resourceId } = req.params;
+
+        let { permission } = grantPermission('update:user', req.user, resourceId);
+        if (!permission.granted) next();
+        else {
+            let user = await User.findOneAndDelete({ _id: resourceId }).catch(err => { res.status(500).json({ message: err.errmsg }) });
+            if (user)
+                res.status(200).json({ message: `Deleted user id:${user._id}` });
+            else next();
+        }
     },
 }

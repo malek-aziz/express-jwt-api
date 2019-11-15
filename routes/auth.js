@@ -2,7 +2,6 @@ var express = require('express');
 var router = express.Router();
 
 var passport = require('passport');
-var passportConf = require('../app/middleware/passport');
 
 var middlewareLogin = passport.authenticate('local', { session: false });
 var middlewareAuthGoogle = passport.authenticate('googleToken', { session: false });

@@ -4,8 +4,9 @@ var path = require('path');
 // var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
+var passport = require('./app/middleware/passport');
 
-var indexRouter = require('./routes/index');
+var apiRouter = require('./routes/api');
 var authRouter = require('./routes/auth');
 
 var database = require('./db/database');
@@ -13,6 +14,8 @@ var database = require('./db/database');
 var accesscontrol = require('./app/helpers/accesscontrol');
 
 var app = express();
+
+global.appRoot = path.resolve(__dirname);
 
 // view engine setup -> changed to app/views
 app.set('views', path.join(__dirname, 'app/views'));
@@ -44,7 +47,7 @@ app.disable('x-powered-by');
 
 accesscontrol();
 
-app.use('/api', indexRouter);
+app.use('/api', apiRouter);
 app.use('/auth', authRouter);
 
 // catch 404 and forward to error handler
